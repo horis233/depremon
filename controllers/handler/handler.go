@@ -21,14 +21,14 @@ type Recorder struct {
 }
 
 type DeprecatedObjectList struct {
-	Group   string
-	Version string
-	Kind    string
-	Objects []DeprecatedObject
+	Group   string             `json:"group"`
+	Version string             `json:"version"`
+	Kind    string             `json:"kind"`
+	Objects []DeprecatedObject `json:"objects"`
 }
 type DeprecatedObject struct {
-	Name      string
-	NameSpace string
+	Name      string `json:"name"`
+	Namespace string `json:"namespace,omitempty"`
 }
 
 // Handle mutates every creating pods
@@ -44,7 +44,7 @@ func (r *Recorder) Handle(ctx context.Context, req admission.Request) admission.
 	} else {
 		obj = DeprecatedObject{
 			Name:      req.Name,
-			NameSpace: req.Namespace,
+			Namespace: req.Namespace,
 		}
 	}
 
@@ -115,11 +115,11 @@ func AddtoReport(apiReport []DeprecatedObjectList, pendingApi DeprecatedObjectLi
 	for i, objList := range apiReport {
 		apiMap[objList.Group+objList.Version+objList.Kind] = i
 		for _, obj := range objList.Objects {
-			apiObjMap[obj.Name+obj.NameSpace+objList.Group+objList.Version+objList.Kind] = objList.Objects
+			apiObjMap[obj.Name+obj.Namespace+objList.Group+objList.Version+objList.Kind] = objList.Objects
 		}
 	}
 	if objIndex, apiFound := apiMap[pendingApi.Group+pendingApi.Version+pendingApi.Kind]; apiFound {
-		_, objFound := apiObjMap[pendingApi.Objects[0].Name+pendingApi.Objects[0].NameSpace+pendingApi.Group+pendingApi.Version+pendingApi.Kind]
+		_, objFound := apiObjMap[pendingApi.Objects[0].Name+pendingApi.Objects[0].Namespace+pendingApi.Group+pendingApi.Version+pendingApi.Kind]
 		if objFound {
 			return apiReport
 		}

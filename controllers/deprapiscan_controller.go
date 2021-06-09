@@ -44,9 +44,8 @@ type DeprapiscanReconciler struct {
 //+kubebuilder:rbac:groups=operator.horis233.com,resources=deprapiscans,verbs=get;list;watch;create;update;patch;delete
 //+kubebuilder:rbac:groups=operator.horis233.com,resources=deprapiscans/status,verbs=get;update;patch
 //+kubebuilder:rbac:groups=operator.horis233.com,resources=deprapiscans/finalizers,verbs=update
-//+kubebuilder:rbac:groups="",resources=configmaps;services,verbs=get;list;watch;create;update;patch;delete
+//+kubebuilder:rbac:groups="",resources=configmaps;services;secrets,verbs=get;list;watch;create;update;patch;delete
 //+kubebuilder:rbac:groups=admissionregistration.k8s.io,resources=mutatingwebhookconfigurations;validatingwebhookconfigurations,verbs=get;list;watch;create;update;patch
-
 
 // Reconcile is part of the main kubernetes reconciliation loop which aims to
 // move the current state of the cluster closer to the desired state.

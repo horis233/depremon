@@ -3,3 +3,6 @@
 # It should be run by config/default
 resources:
 - operator_v1alpha1_deprapiscan.yaml
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: deprapiscan

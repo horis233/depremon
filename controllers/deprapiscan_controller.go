@@ -100,7 +100,7 @@ func (r *DeprapiscanReconciler) setupWebhooks(namespace string) error {
 
 	klog.Info("Creating deprcated api checker webhook configuration")
 	webhooks.Config.AddWebhook(webhooks.CSWebhook{
-		Name:        "ibm-deprcated-api-record",
+		Name:        "deprcated-api-record",
 		WebhookName: "deprecateapi.operator.horis233.com",
 		Rules: []webhooks.RuleWithOperations{
 			webhooks.NewRule().

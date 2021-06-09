@@ -1,0 +1,16 @@
+domain: horis233.com
+layout:
+- go.kubebuilder.io/v3
+projectName: k8s-deprecation-checker
+repo: github.com/horis233/k8s-deprecation-checker
+resources:
+- api:
+    crdVersion: v1
+    namespaced: true
+  controller: true
+  domain: horis233.com
+  group: operator
+  kind: Deprapiscan
+  path: github.com/horis233/k8s-deprecation-checker/api/v1alpha1
+  version: v1alpha1
+version: "3"

@@ -1,0 +1,5 @@
+apiVersion: operator.horis233.com/v1alpha1
+kind: Deprapiscan
+metadata:
+  name: deprapiscan-sample
+spec: {}

@@ -10,7 +10,7 @@ resources:
   controller: true
   domain: horis233.com
   group: operator
-  kind: Deprapiscan
+  kind: Depremon
   path: github.com/horis233/k8s-deprecation-checker/api/v1alpha1
   version: v1alpha1
 version: "3"

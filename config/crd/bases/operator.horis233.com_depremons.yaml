@@ -6,20 +6,20 @@ metadata:
   annotations:
     controller-gen.kubebuilder.io/version: v0.4.1
   creationTimestamp: null
-  name: deprapiscans.operator.horis233.com
+  name: depremons.operator.horis233.com
 spec:
   group: operator.horis233.com
   names:
-    kind: Deprapiscan
-    listKind: DeprapiscanList
-    plural: deprapiscans
-    singular: deprapiscan
+    kind: Depremon
+    listKind: DepremonList
+    plural: depremons
+    singular: depremon
   scope: Namespaced
   versions:
   - name: v1alpha1
     schema:
       openAPIV3Schema:
-        description: Deprapiscan is the Schema for the deprapiscans API
+        description: Depremon is the Schema for the depremons API
         properties:
           apiVersion:
             description: 'APIVersion defines the versioned schema of this representation
@@ -34,15 +34,15 @@ spec:
           metadata:
             type: object
           spec:
-            description: DeprapiscanSpec defines the desired state of Deprapiscan
+            description: DepremonSpec defines the desired state of Depremon
             properties:
               foo:
-                description: Foo is an example field of Deprapiscan. Edit deprapiscan_types.go
+                description: Foo is an example field of Depremon. Edit depremon_types.go
                   to remove/update
                 type: string
             type: object
           status:
-            description: DeprapiscanStatus defines the observed state of Deprapiscan
+            description: DepremonStatus defines the observed state of Depremon
             type: object
         type: object
     served: true

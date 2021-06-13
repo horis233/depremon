@@ -1,5 +1,5 @@
 apiVersion: operator.horis233.com/v1alpha1
-kind: Deprapiscan
+kind: Depremon
 metadata:
-  name: deprapiscan-sample
+  name: depremon-sample
 spec: {}

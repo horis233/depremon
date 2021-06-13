@@ -7,6 +7,6 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 images:
 - name: controller
-  newName: quay.io/horis233/deprapiscan-webhook-amd64
+  newName: quay.io/horis233/depremon-webhook-amd64
   newTag: deprecate-api
-namespace: deprapiscan
+namespace: depremon

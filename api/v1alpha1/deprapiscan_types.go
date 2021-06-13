@@ -23,17 +23,17 @@ import (
 // EDIT THIS FILE!  THIS IS SCAFFOLDING FOR YOU TO OWN!
 // NOTE: json tags are required.  Any new fields you add must have json tags for the fields to be serialized.
 
-// DeprapiscanSpec defines the desired state of Deprapiscan
-type DeprapiscanSpec struct {
+// DepremonSpec defines the desired state of Depremon
+type DepremonSpec struct {
 	// INSERT ADDITIONAL SPEC FIELDS - desired state of cluster
 	// Important: Run "make" to regenerate code after modifying this file
 
-	// Foo is an example field of Deprapiscan. Edit deprapiscan_types.go to remove/update
+	// Foo is an example field of Depremon. Edit depremon_types.go to remove/update
 	Foo string `json:"foo,omitempty"`
 }
 
-// DeprapiscanStatus defines the observed state of Deprapiscan
-type DeprapiscanStatus struct {
+// DepremonStatus defines the observed state of Depremon
+type DepremonStatus struct {
 	// INSERT ADDITIONAL STATUS FIELD - define observed state of cluster
 	// Important: Run "make" to regenerate code after modifying this file
 }
@@ -41,24 +41,24 @@ type DeprapiscanStatus struct {
 //+kubebuilder:object:root=true
 //+kubebuilder:subresource:status
 
-// Deprapiscan is the Schema for the deprapiscans API
-type Deprapiscan struct {
+// Depremon is the Schema for the depremons API
+type Depremon struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`
 
-	Spec   DeprapiscanSpec   `json:"spec,omitempty"`
-	Status DeprapiscanStatus `json:"status,omitempty"`
+	Spec   DepremonSpec   `json:"spec,omitempty"`
+	Status DepremonStatus `json:"status,omitempty"`
 }
 
 //+kubebuilder:object:root=true
 
-// DeprapiscanList contains a list of Deprapiscan
-type DeprapiscanList struct {
+// DepremonList contains a list of Depremon
+type DepremonList struct {
 	metav1.TypeMeta `json:",inline"`
 	metav1.ListMeta `json:"metadata,omitempty"`
-	Items           []Deprapiscan `json:"items"`
+	Items           []Depremon `json:"items"`
 }
 
 func init() {
-	SchemeBuilder.Register(&Deprapiscan{}, &DeprapiscanList{})
+	SchemeBuilder.Register(&Depremon{}, &DepremonList{})
 }

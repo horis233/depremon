@@ -35,7 +35,7 @@ rules:
 - apiGroups:
   - operator.horis233.com
   resources:
-  - deprapiscans
+  - depremons
   verbs:
   - create
   - delete
@@ -47,13 +47,13 @@ rules:
 - apiGroups:
   - operator.horis233.com
   resources:
-  - deprapiscans/finalizers
+  - depremons/finalizers
   verbs:
   - update
 - apiGroups:
   - operator.horis233.com
   resources:
-  - deprapiscans/status
+  - depremons/status
   verbs:
   - get
   - patch

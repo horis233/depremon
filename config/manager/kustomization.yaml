@@ -8,5 +8,5 @@ kind: Kustomization
 images:
 - name: controller
   newName: quay.io/horis233/depremon-webhook-amd64
-  newTag: deprecate-api
+  newTag: latest
 namespace: depremon

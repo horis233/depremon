@@ -89,7 +89,6 @@ func (r *Recorder) Handle(ctx context.Context, req admission.Request) admission.
 		}
 	}
 	deprecatedApiReport := cm.Data["deprecated-api-report.yaml"]
-	klog.Info(deprecatedApiReport)
 	if err := utilyaml.Unmarshal([]byte(deprecatedApiReport), &apiSlice); err != nil {
 		klog.Error(err)
 		return admission.Errored(http.StatusBadRequest, err)

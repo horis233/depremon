@@ -16,7 +16,7 @@ import (
 // regstering to the WebhookBuilder or directly to the webhook server.
 type WebhookRegister interface {
 	RegisterToBuilder(blrd *builder.WebhookBuilder) *builder.WebhookBuilder
-	RegisterToServer(scheme *runtime.Scheme, srv *webhook.Server)
+	RegisterToServer(scheme *runtime.Scheme, srv *webhook.Server) error
 
 	GetReconciler(scheme *runtime.Scheme) (WebhookReconciler, error)
 }
@@ -140,9 +140,16 @@ func (awr AdmissionWebhookRegister) RegisterToBuilder(bldr *builder.WebhookBuild
 }
 
 // RegisterToServer regsiters the webhook to the path of `awr`
-func (awr AdmissionWebhookRegister) RegisterToServer(scheme *runtime.Scheme, srv *webhook.Server) {
-	awr.Hook.InjectScheme(scheme)
+func (awr AdmissionWebhookRegister) RegisterToServer(scheme *runtime.Scheme, srv *webhook.Server) (err error) {
+	defer func() {
+		if r := recover(); r != nil {
+		}
+	}()
+	if err := awr.Hook.InjectScheme(scheme); err != nil {
+		return err
+	}
 	srv.Register(awr.Path, awr.Hook)
+	return nil
 }
 
 // GetReconciler creates a reconciler for awr's given Path and Type

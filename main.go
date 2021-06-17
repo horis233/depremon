@@ -33,6 +33,7 @@ import (
 
 	operatorv1alpha1 "github.com/horis233/k8s-deprecation-checker/api/v1alpha1"
 	"github.com/horis233/k8s-deprecation-checker/controllers"
+	"github.com/horis233/k8s-deprecation-checker/controllers/checker"
 	"github.com/horis233/k8s-deprecation-checker/controllers/utils"
 	//+kubebuilder:scaffold:imports
 )
@@ -105,9 +106,35 @@ func main() {
 		os.Exit(1)
 	}
 
+	setupLog.Info("checking webhook configuration apiversion")
+	quit := make(chan bool)
+	errc := make(chan error)
+	done := make(chan error)
+	go func() {
+		err := checker.WebhookConfigurationChecks(mgr.GetClient(), mgr.GetConfig())
+		ch := done
+		if err != nil {
+			ch = errc
+		}
+		select {
+		case ch <- err:
+			return
+		case <-quit:
+			return
+		}
+	}()
+
 	setupLog.Info("starting manager")
 	if err := mgr.Start(ctrl.SetupSignalHandler()); err != nil {
 		setupLog.Error(err, "problem running manager")
 		os.Exit(1)
+	}
+
+	select {
+	case err := <-errc:
+		close(quit)
+		setupLog.Error(err, "failed to check webhook configuration")
+		os.Exit(1)
+	case <-done:
 	}
 }

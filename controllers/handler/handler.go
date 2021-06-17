@@ -31,9 +31,8 @@ type DeprecatedObject struct {
 	Namespace string `json:"namespace,omitempty"`
 }
 
-// Handle mutates every creating pods
+// Handle will record deprecated resources
 func (r *Recorder) Handle(ctx context.Context, req admission.Request) admission.Response {
-
 	klog.Infof("Webhook is invoked by resource %s/%s", req.AdmissionRequest.Namespace, req.AdmissionRequest.Name)
 
 	var obj DeprecatedObject
@@ -57,52 +56,8 @@ func (r *Recorder) Handle(ctx context.Context, req admission.Request) admission.
 		},
 	}
 
-	cm := &corev1.ConfigMap{}
-	ns, err := utils.GetOperatorNamespace()
+	err := UpdateConfigmap(ctx, r.Client, apiFromRequest)
 	if err != nil {
-		klog.Error(err)
-		return admission.Errored(http.StatusBadRequest, err)
-	}
-	var apiSlice []DeprecatedObjectList
-
-	err = r.Client.Get(ctx, types.NamespacedName{Namespace: ns, Name: "deprecated-api-report"}, cm)
-	if err != nil {
-		if errors.IsNotFound(err) {
-			cm.SetName("deprecated-api-report")
-			cm.SetNamespace(ns)
-			apiSlice = AddtoReport(apiSlice, apiFromRequest)
-			rawData, err := utilyaml.Marshal(apiSlice)
-			if err != nil {
-				klog.Error(err)
-				return admission.Errored(http.StatusBadRequest, err)
-			}
-			cm.Data = make(map[string]string)
-			cm.Data["deprecated-api-report.yaml"] = string(rawData)
-			err = r.Client.Create(ctx, cm)
-			if err != nil {
-				klog.Error(err)
-				return admission.Errored(http.StatusBadRequest, err)
-			}
-		} else {
-			klog.Error(err)
-			return admission.Errored(http.StatusBadRequest, err)
-		}
-	}
-	deprecatedApiReport := cm.Data["deprecated-api-report.yaml"]
-	if err := utilyaml.Unmarshal([]byte(deprecatedApiReport), &apiSlice); err != nil {
-		klog.Error(err)
-		return admission.Errored(http.StatusBadRequest, err)
-	}
-	apiSlice = AddtoReport(apiSlice, apiFromRequest)
-	rawData, err := utilyaml.Marshal(apiSlice)
-	if err != nil {
-		klog.Error(err)
-		return admission.Errored(http.StatusBadRequest, err)
-	}
-	cm.Data["deprecated-api-report.yaml"] = string(rawData)
-	err = r.Client.Update(ctx, cm)
-	if err != nil {
-		klog.Error(err)
 		return admission.Errored(http.StatusBadRequest, err)
 	}
 	return admission.Allowed("")
@@ -127,4 +82,52 @@ func AddtoReport(apiReport []DeprecatedObjectList, pendingApi DeprecatedObjectLi
 	}
 	apiReport = append(apiReport, pendingApi)
 	return apiReport
+}
+
+func UpdateConfigmap(ctx context.Context, client client.Client, apiFromRequest DeprecatedObjectList) error {
+	cm := &corev1.ConfigMap{}
+	ns, err := utils.GetOperatorNamespace()
+	if err != nil {
+		klog.Error(err)
+		return err
+	}
+	var apiSlice []DeprecatedObjectList
+
+	err = client.Get(ctx, types.NamespacedName{Namespace: ns, Name: "deprecated-api-report"}, cm)
+	if err != nil {
+		if errors.IsNotFound(err) {
+			cm.SetName("deprecated-api-report")
+			cm.SetNamespace(ns)
+			apiSlice = AddtoReport(apiSlice, apiFromRequest)
+			rawData, err := utilyaml.Marshal(apiSlice)
+			if err != nil {
+				klog.Error(err)
+				return err
+			}
+			cm.Data = make(map[string]string)
+			cm.Data["deprecated-api-report.yaml"] = string(rawData)
+			err = client.Create(ctx, cm)
+			if err != nil {
+				klog.Error(err)
+				return err
+			}
+		} else {
+			klog.Error(err)
+			return err
+		}
+	}
+	deprecatedApiReport := cm.Data["deprecated-api-report.yaml"]
+	if err := utilyaml.Unmarshal([]byte(deprecatedApiReport), &apiSlice); err != nil {
+		klog.Error(err)
+		return err
+	}
+	apiSlice = AddtoReport(apiSlice, apiFromRequest)
+	rawData, err := utilyaml.Marshal(apiSlice)
+	if err != nil {
+		klog.Error(err)
+		return err
+	}
+	cm.Data["deprecated-api-report.yaml"] = string(rawData)
+	err = client.Update(ctx, cm)
+	return err
 }

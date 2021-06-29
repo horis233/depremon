@@ -17,9 +17,7 @@ COPY controllers/ controllers/
 # Build
 RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -o manager main.go
 
-# Use distroless as minimal base image to package the manager binary
-# Refer to https://github.com/GoogleContainerTools/distroless for more details
-FROM hyc-cloud-private-edge-docker-local.artifactory.swg-devops.com/build-images/ubi8-minimal:8.3-298.1618432845
+FROM hyc-cloud-private-edge-docker-local.artifactory.swg-devops.com/build-images/ubi8:8.3-279
 WORKDIR /
 COPY --from=builder /workspace/manager .
 USER 65532:65532

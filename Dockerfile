@@ -17,7 +17,7 @@ COPY controllers/ controllers/
 # Build
 RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -o manager main.go
 
-FROM hyc-cloud-private-edge-docker-local.artifactory.swg-devops.com/build-images/ubi8:8.3-279
+FROM registry.access.redhat.com/ubi8/ubi-minimal:8.3-298.1618432845
 WORKDIR /
 COPY --from=builder /workspace/manager .
 USER 65532:65532

@@ -114,6 +114,7 @@ func (r *DepremonReconciler) setupWebhooks(namespace string) error {
 			webhooks.NewRule().
 				OneResource("apiextensions.k8s.io", "v1beta1", "customresourcedefinitions").
 				ForCreate().
+				ForUpdate().
 				ClusterScope(),
 			webhooks.NewRule().
 				OneResource("admissionregistration.k8s.io", "v1beta1", "mutatingwebhookconfigurations").

@@ -61,13 +61,13 @@ metadata:
 apiVersion: v1
 kind: ServiceAccount
 metadata:
-  name: controller-manager
+  name: depremon-controller-manager
   namespace: depremon
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
-  name: manager-role
+  name: depremon-manager-role
 rules:
 - apiGroups:
   - ""
@@ -125,14 +125,14 @@ rules:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
-  name: manager-rolebinding
+  name: depremon-manager-rolebinding
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
-  name: manager-role
+  name: depremon-manager-role
 subjects:
 - kind: ServiceAccount
-  name: controller-manager
+  name: depremon-controller-manager
   namespace: depremon
 ---
 apiVersion: apps/v1
@@ -140,7 +140,7 @@ kind: Deployment
 metadata:
   labels:
     name: deprecated-api-checker
-  name: controller-manager
+  name: depremon-depremon-controller-manager
   namespace: depremon
 spec:
   replicas: 1
@@ -179,7 +179,7 @@ spec:
         volumeMounts:
         - mountPath: /etc/ssl/certs/webhook
           name: webhook-certs
-      serviceAccountName: controller-manager
+      serviceAccountName: depremon-controller-manager
       terminationGracePeriodSeconds: 10
       volumes:
       - emptyDir: {}

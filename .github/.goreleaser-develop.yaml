@@ -28,7 +28,11 @@ dockers:
       - "--label=org.opencontainers.image.source={{ .GitURL }}"
       - "--platform=linux/amd64"
     extra_files:
-    - channels/
+    - go.mod
+    - go.sum
+    - main.go
+    - api/
+    - controllers/
   - image_templates:
       - quay.io/horis233/depremon-webhook:develop-ppc64le
     dockerfile: Dockerfile
@@ -45,7 +49,11 @@ dockers:
       - "--label=org.opencontainers.image.source={{ .GitURL }}"
       - "--platform=linux/ppc64le"
     extra_files:
-    - channels/
+    - go.mod
+    - go.sum
+    - main.go
+    - api/
+    - controllers/
   - image_templates:
       - quay.io/horis233/depremon-webhook:develop-s390x
     dockerfile: Dockerfile
@@ -62,7 +70,11 @@ dockers:
       - "--label=org.opencontainers.image.source={{ .GitURL }}"
       - "--platform=linux/s390x"
     extra_files:
-    - channels/
+    - go.mod
+    - go.sum
+    - main.go
+    - api/
+    - controllers/
 
 docker_manifests:
   - name_template: quay.io/horis233/depremon-webhook:develop

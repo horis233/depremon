@@ -54,31 +54,31 @@ dockers:
     - main.go
     - api/
     - controllers/
-  - image_templates:
-      - quay.io/horis233/depremon-webhook:develop-s390x
-    dockerfile: Dockerfile
-    use_buildx: true
-    goos: linux
-    goarch: s390x
-    build_flag_templates:
-      - "--pull"
-      - "--build-arg=ARCH=s390x"
-      - "--label=org.opencontainers.image.created={{ .Date }}"
-      - "--label=org.opencontainers.image.name={{ .ProjectName }}"
-      - "--label=org.opencontainers.image.revision={{ .FullCommit }}"
-      - "--label=org.opencontainers.image.version={{ .Version }}"
-      - "--label=org.opencontainers.image.source={{ .GitURL }}"
-      - "--platform=linux/s390x"
-    extra_files:
-    - go.mod
-    - go.sum
-    - main.go
-    - api/
-    - controllers/
+  # - image_templates:
+  #     - quay.io/horis233/depremon-webhook:develop-s390x
+  #   dockerfile: Dockerfile
+  #   use_buildx: true
+  #   goos: linux
+  #   goarch: s390x
+  #   build_flag_templates:
+  #     - "--pull"
+  #     - "--build-arg=ARCH=s390x"
+  #     - "--label=org.opencontainers.image.created={{ .Date }}"
+  #     - "--label=org.opencontainers.image.name={{ .ProjectName }}"
+  #     - "--label=org.opencontainers.image.revision={{ .FullCommit }}"
+  #     - "--label=org.opencontainers.image.version={{ .Version }}"
+  #     - "--label=org.opencontainers.image.source={{ .GitURL }}"
+  #     - "--platform=linux/s390x"
+  #   extra_files:
+  #   - go.mod
+  #   - go.sum
+  #   - main.go
+  #   - api/
+  #   - controllers/
 
 docker_manifests:
   - name_template: quay.io/horis233/depremon-webhook:develop
     image_templates:
       - quay.io/horis233/depremon-webhook:develop-amd64
       - quay.io/horis233/depremon-webhook:develop-ppc64le
-      - quay.io/horis233/depremon-webhook:develop-s390x
+      # - quay.io/horis233/depremon-webhook:develop-s390x

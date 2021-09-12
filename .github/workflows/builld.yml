@@ -52,7 +52,7 @@ jobs:
         run: |
           docker push ${{ env.AMD64_IMG }}
           docker push ${{ env.PPC64LE_IMG }}
-          docker push ${{ env.S390X_IMG }}
+          # docker push ${{ env.S390X_IMG }}
       - name: Create and publish manifest list
         run: |
           docker manifest create ${{ env.MANIFEST_LIST }} \

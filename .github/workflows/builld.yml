@@ -3,7 +3,7 @@ name: build and push multiple arch images
 on:
   push:
     branches:
-      - 'master'
+      - 'main'
 
 
 env:

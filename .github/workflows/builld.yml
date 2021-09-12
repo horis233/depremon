@@ -56,5 +56,5 @@ jobs:
       - name: Create and publish manifest list
         run: |
           docker manifest create ${{ env.MANIFEST_LIST }} \
-            ${{ env.AMD_IMG }} ${{ env.ARM64_IMG }} ${{ env.ARM_IMG }}
+            ${{ env.PPC64LE_IMG }} ${{ env.AMD64_IMG }}
           docker manifest push ${{ env.MANIFEST_LIST }}

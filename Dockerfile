@@ -15,7 +15,7 @@ COPY api/ api/
 COPY controllers/ controllers/
 
 # Build
-RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -o manager main.go
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=${ARCH} go build -a -o manager main.go
 
 FROM registry.access.redhat.com/ubi8/ubi-minimal:8.3-298
 WORKDIR /

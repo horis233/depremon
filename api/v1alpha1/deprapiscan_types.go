@@ -28,8 +28,7 @@ type DepremonSpec struct {
 	// INSERT ADDITIONAL SPEC FIELDS - desired state of cluster
 	// Important: Run "make" to regenerate code after modifying this file
 
-	// Foo is an example field of Depremon. Edit depremon_types.go to remove/update
-	Foo string `json:"foo,omitempty"`
+	Namespaces []string `json:"namespaces,omitempty"`
 }
 
 // DepremonStatus defines the observed state of Depremon

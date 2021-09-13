@@ -3,6 +3,7 @@ package handler
 import (
 	"context"
 	"net/http"
+	"strings"
 
 	utilyaml "github.com/ghodss/yaml"
 	corev1 "k8s.io/api/core/v1"
@@ -16,8 +17,9 @@ import (
 )
 
 type Recorder struct {
-	Client  client.Client
-	decoder *admission.Decoder
+	Client     client.Client
+	Namespaces []string
+	decoder    *admission.Decoder
 }
 
 type DeprecatedObjectList struct {
@@ -33,7 +35,24 @@ type DeprecatedObject struct {
 
 // Handle will record deprecated resources
 func (r *Recorder) Handle(ctx context.Context, req admission.Request) admission.Response {
-	klog.Infof("Webhook is invoked by resource %s/%s", req.AdmissionRequest.Namespace, req.AdmissionRequest.Name)
+	klog.Infof("Webhook is invoked by resource %s/%s, created by %s", req.AdmissionRequest.Namespace, req.AdmissionRequest.Name, req.UserInfo.Username)
+
+	if len(r.Namespaces) != 0 {
+		requesterNs := strings.Split(req.UserInfo.Username, ":")[2]
+		requesterName := strings.Split(req.UserInfo.Username, ":")[3]
+		var find bool
+		r.Namespaces = append(r.Namespaces, "openshift-operator-lifecycle-manager")
+		for _, ns := range r.Namespaces {
+			if requesterNs == ns {
+				find = true
+				break
+			}
+		}
+		if !find {
+			klog.Infof("Requester %s/%s is filtered", requesterNs, requesterName)
+			return admission.Allowed("")
+		}
+	}
 
 	var obj DeprecatedObject
 	if req.Namespace == "" {

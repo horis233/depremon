@@ -77,7 +77,7 @@ func (r *DepremonReconciler) Reconcile(ctx context.Context, req ctrl.Request) (c
 		return ctrl.Result{}, err
 	}
 
-	if err := r.setupWebhooks(namespace); err != nil {
+	if err := r.setupWebhooks(namespace, instance.Spec.Namespaces); err != nil {
 		klog.Error(err, "Error setting up webhook server")
 	}
 
@@ -96,7 +96,7 @@ func (r *DepremonReconciler) SetupWithManager(mgr ctrl.Manager) error {
 		Complete(r)
 }
 
-func (r *DepremonReconciler) setupWebhooks(namespace string) error {
+func (r *DepremonReconciler) setupWebhooks(namespace string, namespaces []string) error {
 
 	klog.Info("Creating deprcated api checker webhook configuration")
 	webhooks.Config.AddWebhook(webhooks.CSWebhook{
@@ -114,7 +114,6 @@ func (r *DepremonReconciler) setupWebhooks(namespace string) error {
 			webhooks.NewRule().
 				OneResource("apiextensions.k8s.io", "v1beta1", "customresourcedefinitions").
 				ForCreate().
-				ForUpdate().
 				ClusterScope(),
 			webhooks.NewRule().
 				OneResource("admissionregistration.k8s.io", "v1beta1", "mutatingwebhookconfigurations").
@@ -127,7 +126,6 @@ func (r *DepremonReconciler) setupWebhooks(namespace string) error {
 			webhooks.NewRule().
 				OneResource("apiregistration.k8s.io", "v1beta1", "apiservices").
 				ForCreate().
-				ForUpdate().
 				ClusterScope(),
 			webhooks.NewRule().
 				OneResource("coordination.k8s.io", "v1beta1", "leases").
@@ -175,7 +173,8 @@ func (r *DepremonReconciler) setupWebhooks(namespace string) error {
 			Path: "/deprecate-api-check",
 			Hook: &admission.Webhook{
 				Handler: &handler.Recorder{
-					Client: r.Client,
+					Client:     r.Client,
+					Namespaces: namespaces,
 				},
 			},
 		},

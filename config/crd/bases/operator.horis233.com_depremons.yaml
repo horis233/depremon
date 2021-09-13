@@ -36,10 +36,10 @@ spec:
           spec:
             description: DepremonSpec defines the desired state of Depremon
             properties:
-              foo:
-                description: Foo is an example field of Depremon. Edit depremon_types.go
-                  to remove/update
-                type: string
+              namespaces:
+                items:
+                  type: string
+                type: array
             type: object
           status:
             description: DepremonStatus defines the observed state of Depremon

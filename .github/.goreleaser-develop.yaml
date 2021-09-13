@@ -15,7 +15,7 @@ dockers:
   - image_templates:
       - quay.io/horis233/depremon-webhook:develop-amd64
     dockerfile: Dockerfile
-    use_buildx: true
+    use: buildx
     goos: linux
     goarch: amd64
     build_flag_templates:
@@ -36,7 +36,7 @@ dockers:
   - image_templates:
       - quay.io/horis233/depremon-webhook:develop-ppc64le
     dockerfile: Dockerfile
-    use_buildx: true
+    use: buildx
     goos: linux
     goarch: ppc64le
     build_flag_templates:
@@ -57,7 +57,7 @@ dockers:
   - image_templates:
       - quay.io/horis233/depremon-webhook:develop-s390x
     dockerfile: Dockerfile
-    use_buildx: true
+    use: buildx
     goos: linux
     goarch: s390x
     build_flag_templates:

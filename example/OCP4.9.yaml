@@ -164,7 +164,7 @@ spec:
           valueFrom:
             fieldRef:
               fieldPath: metadata.name
-        image: quay.io/horis233/depremon-webhook-amd64:latest
+        image: quay.io/horis233/depremon-webhook:develop
         name: manager
         ports:
         - containerPort: 8443

@@ -41,7 +41,7 @@ func (r *Recorder) Handle(ctx context.Context, req admission.Request) admission.
 		requesterNs := strings.Split(req.UserInfo.Username, ":")[2]
 		requesterName := strings.Split(req.UserInfo.Username, ":")[3]
 		var find bool
-		r.Namespaces = append(r.Namespaces, "openshift-operator-lifecycle-manager")
+		// r.Namespaces = append(r.Namespaces, "openshift-operator-lifecycle-manager")
 		for _, ns := range r.Namespaces {
 			if requesterNs == ns {
 				find = true

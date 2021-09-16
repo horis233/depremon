@@ -15,3 +15,16 @@ There are some existing tools designed to check if project yaml files has deprec
 Depremon is a Kubernetes Operator deploying a Kubernetes webhook to record resources with Kubernetes API which are going to be removed and save the result into a configmap.
 
 Users can use Depremon custom resource to customize the configurations.
+
+## Apply watch namespace
+
+In order to only check deprecated api from specific namespace, we can set the watch namespace in the spec.
+
+```yaml
+spec:
+  namespaces:
+    - test1
+    - test2
+```
+
+Then depremon will only watch deprecated api from these namespaces.

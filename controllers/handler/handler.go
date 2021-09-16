@@ -29,17 +29,19 @@ type DeprecatedObjectList struct {
 	Objects []DeprecatedObject `json:"objects"`
 }
 type DeprecatedObject struct {
-	Name      string `json:"name"`
-	Namespace string `json:"namespace,omitempty"`
+	Name          string   `json:"name"`
+	Namespace     string   `json:"namespace,omitempty"`
+	RequesterList []string `json:"requesterList"`
 }
 
 // Handle will record deprecated resources
 func (r *Recorder) Handle(ctx context.Context, req admission.Request) admission.Response {
 	klog.Infof("Webhook is invoked by resource %s/%s, created by %s", req.AdmissionRequest.Namespace, req.AdmissionRequest.Name, req.UserInfo.Username)
 
+	requesterNs := strings.Split(req.UserInfo.Username, ":")[2]
+	requesterName := strings.Split(req.UserInfo.Username, ":")[3]
+
 	if len(r.Namespaces) != 0 {
-		requesterNs := strings.Split(req.UserInfo.Username, ":")[2]
-		requesterName := strings.Split(req.UserInfo.Username, ":")[3]
 		var find bool
 		// r.Namespaces = append(r.Namespaces, "openshift-operator-lifecycle-manager")
 		for _, ns := range r.Namespaces {
@@ -58,11 +60,17 @@ func (r *Recorder) Handle(ctx context.Context, req admission.Request) admission.
 	if req.Namespace == "" {
 		obj = DeprecatedObject{
 			Name: req.Name,
+			RequesterList: []string{
+				requesterNs + "/" + requesterName,
+			},
 		}
 	} else {
 		obj = DeprecatedObject{
 			Name:      req.Name,
 			Namespace: req.Namespace,
+			RequesterList: []string{
+				requesterNs + "/" + requesterName,
+			},
 		}
 	}
 
@@ -84,16 +92,22 @@ func (r *Recorder) Handle(ctx context.Context, req admission.Request) admission.
 
 func AddtoReport(apiReport []DeprecatedObjectList, pendingApi DeprecatedObjectList) []DeprecatedObjectList {
 	apiMap := make(map[string]int)
-	apiObjMap := make(map[string][]DeprecatedObject)
+	apiObjMap := make(map[string]int)
 	for i, objList := range apiReport {
 		apiMap[objList.Group+objList.Version+objList.Kind] = i
-		for _, obj := range objList.Objects {
-			apiObjMap[obj.Name+obj.Namespace+objList.Group+objList.Version+objList.Kind] = objList.Objects
+		for j, obj := range objList.Objects {
+			apiObjMap[obj.Name+obj.Namespace+objList.Group+objList.Version+objList.Kind] = j
 		}
 	}
 	if objIndex, apiFound := apiMap[pendingApi.Group+pendingApi.Version+pendingApi.Kind]; apiFound {
-		_, objFound := apiObjMap[pendingApi.Objects[0].Name+pendingApi.Objects[0].Namespace+pendingApi.Group+pendingApi.Version+pendingApi.Kind]
+		resourceIndex, objFound := apiObjMap[pendingApi.Objects[0].Name+pendingApi.Objects[0].Namespace+pendingApi.Group+pendingApi.Version+pendingApi.Kind]
 		if objFound {
+			for _, req := range apiReport[objIndex].Objects[resourceIndex].RequesterList {
+				if req == pendingApi.Objects[0].RequesterList[0] {
+					return apiReport
+				}
+			}
+			apiReport[objIndex].Objects[resourceIndex].RequesterList = append(apiReport[objIndex].Objects[resourceIndex].RequesterList, pendingApi.Objects[0].RequesterList[0])
 			return apiReport
 		}
 		apiReport[objIndex].Objects = append(apiReport[objIndex].Objects, pendingApi.Objects[0])

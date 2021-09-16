@@ -41,6 +41,9 @@ func WebhookConfigurationChecks(client client.Client, config *rest.Config) error
 								Objects: []handler.DeprecatedObject{
 									{
 										Name: mu.Name,
+										RequesterList: []string{
+											template.Manager,
+										},
 									},
 								},
 							}
@@ -82,6 +85,9 @@ func WebhookConfigurationChecks(client client.Client, config *rest.Config) error
 								Objects: []handler.DeprecatedObject{
 									{
 										Name: va.Name,
+										RequesterList: []string{
+											template.Manager,
+										},
 									},
 								},
 							}

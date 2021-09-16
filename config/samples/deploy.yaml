@@ -1,0 +1,138 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: depremon
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: depremon-controller-manager
+  namespace: depremon
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: depremon-manager-role
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - configmaps
+  - secrets
+  - services
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - admissionregistration.k8s.io
+  resources:
+  - mutatingwebhookconfigurations
+  - validatingwebhookconfigurations
+  verbs:
+  - create
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - operator.horis233.com
+  resources:
+  - depremons
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - operator.horis233.com
+  resources:
+  - depremons/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - operator.horis233.com
+  resources:
+  - depremons/status
+  verbs:
+  - get
+  - patch
+  - update
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: depremon-manager-rolebinding
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: depremon-manager-role
+subjects:
+- kind: ServiceAccount
+  name: depremon-controller-manager
+  namespace: depremon
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    name: deprecated-api-checker
+  name: depremon-depremon-controller-manager
+  namespace: depremon
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: deprecated-api-checker
+  template:
+    metadata:
+      labels:
+        name: deprecated-api-checker
+    spec:
+      containers:
+      - command:
+        - /manager
+        env:
+        - name: OPERATOR_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        - name: POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        image: quay.io/horis233/depremon-webhook:develop
+        name: manager
+        ports:
+        - containerPort: 8443
+          protocol: TCP
+        resources:
+          limits:
+            cpu: 200m
+            memory: 256Mi
+          requests:
+            cpu: 200m
+            memory: 256Mi
+        volumeMounts:
+        - mountPath: /etc/ssl/certs/webhook
+          name: webhook-certs
+      serviceAccountName: depremon-controller-manager
+      terminationGracePeriodSeconds: 10
+      volumes:
+      - emptyDir: {}
+        name: webhook-certs
+---
+apiVersion: operator.horis233.com/v1alpha1
+kind: Depremon
+metadata:
+  name: depremon-sample
+  namespace: depremon
+spec: {}

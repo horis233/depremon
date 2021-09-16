@@ -50,7 +50,7 @@ jobs:
         uses: goreleaser/goreleaser-action@v2
         with:
           version: latest
-          args: --snapshot --rm-dist --config .github/.goreleaser-develop.yaml --skip-validate
+          args: --snapshot --rm-dist --config .github/.goreleaser-develop.yaml --skip-validate --timeout 60m
 
       - name: Push container image
         run: |
